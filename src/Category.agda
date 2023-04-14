@@ -3,9 +3,6 @@
 module Category where
 
 open import Data.Bool.Base hiding (_<_; _≤_)
-open import Data.Nat.Base
-open import Data.Nat.Properties
-open import Data.Nat.Solver
 open import Data.Vec hiding (map)
 import Data.Vec as V
 open import Data.Product as P hiding (map)
@@ -34,7 +31,11 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
 
 leq : Category (N._≤_)
 
-Category.identity leq {a} = true
+leq-refl : (n : N.ℕ) -> n N.≤ n
+leq-refl N.zero = N.z≤n
+leq-refl (N.suc n) = N.s≤s (leq-refl n)
 
-composeLeq : {a b c : ℕ} ->  N._≤_ b c -> N._≤_ a b -> N._≤_ a c
+Category.identity leq {n} = leq-refl n
+
+composeLeq : {a b c : N.ℕ} ->  N._≤_ b c -> N._≤_ a b -> N._≤_ a c
 composeLeq = Category._∘_ leq
