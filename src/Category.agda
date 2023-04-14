@@ -1,8 +1,7 @@
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Mul where
+module Category where
 
-open import Function.Base
 open import Data.Bool.Base hiding (_<_; _≤_)
 open import Data.Nat.Base
 open import Data.Nat.Properties
@@ -14,12 +13,20 @@ open import Data.Fin.Base as F hiding (_+_; _<_; _≤_)
 open import Data.Fin.Properties hiding (bounded)
 open import Relation.Binary.PropositionalEquality
 
-record Category (cat : Set -> Set -> Set)  : Set where
+-- A category
+-- we need to make it Set1 to deal with the ominious size issue
+-- data:
+-- objects: things of type 'Set' are our obects
+-- arrows: cat encodes arrows
+record Category (cat : Set -> Set -> Set)  : Set1 where
   constructor category
   field
+    -- structure
     identity : {a : Set} -> cat a a
-    compose : {a b c : Set} ->  cat b c -> cat a b -> cat a c
-    unit_a : {a b : Set} (f : cat a b) -> compose f identity ≡ f
-    unit_b : {a b : Set} (f : cat a b) -> compose identity f ≡ f
+    _∘_ : {a b c : Set} ->  cat b c -> cat a b -> cat a c
 
-    associativity : {a b c d : Set} (f : cat a b) (g : cat b c) (h : cat c d) ->  compose (compose h g) f ≡ compose h (compose g f)
+    -- properties
+    unit_a : {a b : Set} (f : cat a b) -> f ∘ identity ≡ f
+    unit_b : {a b : Set} (f : cat a b) -> identity ∘ f ≡ f
+
+    associativity : {a b c d : Set} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
