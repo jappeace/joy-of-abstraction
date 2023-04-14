@@ -12,21 +12,29 @@ open import Data.Product as P hiding (map)
 open import Data.Fin.Base as F hiding (_+_; _<_; _≤_)
 open import Data.Fin.Properties hiding (bounded)
 open import Relation.Binary.PropositionalEquality
+import Data.Nat.Base as N
 
 -- A category
 -- we need to make it Set1 to deal with the ominious size issue
 -- data:
 -- objects: things of type 'Set' are our obects
 -- arrows: cat encodes arrows
-record Category (cat : Set -> Set -> Set)  : Set1 where
+record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
   constructor category
   field
     -- structure
-    identity : {a : Set} -> cat a a
-    _∘_ : {a b c : Set} ->  cat b c -> cat a b -> cat a c
+    identity : {a : x} -> cat a a
+    _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
 
     -- properties
-    unit_a : {a b : Set} (f : cat a b) -> f ∘ identity ≡ f
-    unit_b : {a b : Set} (f : cat a b) -> identity ∘ f ≡ f
+    unit₁ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
+    unit₂ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
 
-    associativity : {a b c d : Set} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+    associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+
+leq : Category (N._≤_)
+
+Category.identity leq {a} = true
+
+composeLeq : {a b c : ℕ} ->  N._≤_ b c -> N._≤_ a b -> N._≤_ a c
+composeLeq = Category._∘_ leq
