@@ -10,6 +10,8 @@ open import Data.Fin.Base as F hiding (_+_; _<_; _≤_)
 open import Data.Fin.Properties hiding (bounded)
 open import Relation.Binary.PropositionalEquality
 import Data.Nat.Base as N
+open import Data.Nat.Base
+
 
 -- A category
 -- we need to make it Set1 to deal with the ominious size issue
@@ -29,13 +31,22 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
 
     associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
 
-leq : Category (N._≤_)
 
 leq-refl : (n : N.ℕ) -> n N.≤ n
 leq-refl N.zero = N.z≤n
 leq-refl (N.suc n) = N.s≤s (leq-refl n)
 
-Category.identity leq {n} = leq-refl n
+leq-zero : (n : N.ℕ) -> (n ≤ zero) ≡ (zero ≤ zero)
+leq-zero zero = refl
+leq-zero (suc n) = N.z≤n
 
-composeLeq : {a b c : N.ℕ} ->  N._≤_ b c -> N._≤_ a b -> N._≤_ a c
-composeLeq = Category._∘_ leq
+
+leq-trans : (a b c : N.ℕ) -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
+leq-trans zero b c bc ab = z≤n
+leq-trans a zero c bc ab = z≤n
+
+open Category
+
+leq : Category (N._≤_)
+identity leq {n} = leq-refl n
+leq ab ∘ bc = leq-trans ab bc
