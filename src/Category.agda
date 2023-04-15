@@ -5,15 +5,9 @@ module Category where
 open import Data.Bool.Base hiding (_<_; _≤_)
 open import Data.Vec hiding (map)
 import Data.Vec as V
-open import Data.Product as P hiding (map)
-open import Data.Fin.Base as F hiding (_+_; _<_; _≤_)
-open import Data.Fin.Properties hiding (bounded)
 open import Relation.Binary.PropositionalEquality
 import Data.Nat.Base as N
 open import Data.Nat.Base
-import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
 
 
 -- A category
@@ -43,24 +37,13 @@ leq-zero' : (n : ℕ) -> (n ≤ zero) → (zero ≤ zero)
 leq-zero' zero _ = z≤n
 leq-zero' (suc _) ()
 
-leq-zero : (n : N.ℕ) -> (n ≤ zero) ≡ (zero ≤ zero)
-leq-zero zero = refl
-leq-zero (suc n) =
-  begin
-    n ≤ zero
-  ≡⟨ leq-zero' n (N.s≤s n) ⟩
-    zero ≤ zero
-  ∎
+leq-trans : {a b c : ℕ} -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
+leq-trans  bc z≤n = z≤n
+leq-trans  (N.s≤s bc) (N.s≤s ab) = N.s≤s (leq-trans bc ab)
 
-
-
-
-leq-trans : (a b c : N.ℕ) -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
-leq-trans zero b c bc ab = z≤n
-leq-trans a zero c bc ab = leq-zero' a bc
 
 open Category
 
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
-leq ab ∘ bc = leq-trans ab bc
+_∘_ leq bc ab = leq-trans bc ab
