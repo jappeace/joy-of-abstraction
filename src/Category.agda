@@ -9,6 +9,8 @@ open import Relation.Binary.PropositionalEquality
 import Data.Nat.Base as N
 open import Data.Nat.Base
 
+open ≡-Reasoning
+
 
 -- A category
 -- we need to make it Set1 to deal with the ominious size issue
@@ -41,9 +43,14 @@ leq-trans : {a b c : ℕ} -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
 leq-trans  bc z≤n = z≤n
 leq-trans  (N.s≤s bc) (N.s≤s ab) = N.s≤s (leq-trans bc ab)
 
-
 open Category
 
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
+unit₁ leq f =
+  begin
+    f ∘ identity
+  ≡⟨⟩
+    f
+  ∎
