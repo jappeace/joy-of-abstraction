@@ -31,13 +31,13 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
     associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
 
 
-leq-refl : (n : N.ℕ) -> n N.≤ n
-leq-refl N.zero = N.z≤n
-leq-refl (N.suc n) = N.s≤s (leq-refl n)
-
 leq-zero' : (n : ℕ) -> (n ≤ zero) → (zero ≤ zero)
 leq-zero' zero _ = z≤n
 leq-zero' (suc _) ()
+
+leq-refl : (n : N.ℕ) -> n N.≤ n
+leq-refl N.zero = N.z≤n
+leq-refl (N.suc n) = N.s≤s (leq-refl n)
 
 leq-trans : {a b c : ℕ} -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
 leq-trans  bc z≤n = z≤n
@@ -45,11 +45,11 @@ leq-trans  (N.s≤s bc) (N.s≤s ab) = N.s≤s (leq-trans bc ab)
 
 leq-left : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans f (leq-refl a)) ≡ f
 leq-left z≤n = refl
-leq-left { a = suc a } { b = b } (N.s≤s bc) =
+leq-left { a = suc a } { b = suc b } (N.s≤s bc) =
   begin
-     (leq-trans (N.s≤s bc) (leq-refl (suc a)))
+     leq-trans (N.s≤s bc) (leq-refl (suc a))
   ≡⟨ cong (λ x → leq-trans (N.s≤s bc) x) refl ⟩
-     (leq-trans (N.s≤s bc) ((suc a) ≤ (suc a) ))
+     leq-trans (N.s≤s bc) (N.s≤s (leq-refl a))
   ≡⟨⟩
     N.s≤s bc
   ∎
