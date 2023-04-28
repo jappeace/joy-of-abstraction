@@ -43,6 +43,17 @@ leq-trans : {a b c : ℕ} -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
 leq-trans  bc z≤n = z≤n
 leq-trans  (N.s≤s bc) (N.s≤s ab) = N.s≤s (leq-trans bc ab)
 
+leq-left : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans f (leq-refl a)) ≡ f
+leq-left z≤n = refl
+leq-left { a = suc a } { b = b } (N.s≤s bc) =
+  begin
+     (leq-trans (N.s≤s bc) (leq-refl (suc a)))
+  ≡⟨ cong (λ x → leq-trans (N.s≤s bc) x) refl ⟩
+     (leq-trans (N.s≤s bc) ((suc a) ≤ (suc a) ))
+  ≡⟨⟩
+    N.s≤s bc
+  ∎
+
 open Category
 
 leq : Category (N._≤_)
