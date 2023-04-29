@@ -69,6 +69,20 @@ leq-left { a = suc a } { b = suc b } (N.s≤s bc) =
     N.s≤s bc
   ∎
 
+
+leq-assoc : {a b c d : ℕ} -> ( f : a ≤ b ) ->  ( g : b ≤ c ) ->  ( h : c ≤ d ) -> leq-trans (leq-trans h g) f ≡ leq-trans h (leq-trans g f)
+leq-assoc z≤n g h = refl
+leq-assoc {a = suc a} {b = suc b} {c = suc c} {d = suc d} (N.s≤s ab) (N.s≤s g) (N.s≤s h) =
+  begin
+    leq-trans (leq-trans (N.s≤s h) (N.s≤s g)) (N.s≤s ab)
+  ≡⟨⟩
+    leq-trans (N.s≤s (leq-trans h g)) (N.s≤s ab)
+  ≡⟨⟩
+    N.s≤s (leq-trans (leq-trans h g) ab)
+  ≡⟨ cong N.s≤s (leq-assoc ab g h) ⟩
+    leq-trans (N.s≤s h) (leq-trans (N.s≤s g) (N.s≤s ab))
+  ∎
+
 open Category
 
 leq : Category (N._≤_)
@@ -76,3 +90,4 @@ identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
 unit₁ leq f = leq-right f
 unit₂ leq f = leq-left f
+associativity leq f g h = leq-assoc f g h
