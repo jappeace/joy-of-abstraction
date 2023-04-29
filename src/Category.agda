@@ -7,6 +7,7 @@ open import Data.Vec hiding (map)
 import Data.Vec as V
 open import Relation.Binary.PropositionalEquality
 import Data.Nat.Base as N
+import Data.Nat.Properties as P
 open import Data.Nat.Base
 
 open ≡-Reasoning
@@ -25,8 +26,8 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
     _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
 
     -- properties
-    unit₁ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
-    unit₂ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
+    unitʳ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
+    unitˡ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
 
     associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
 
@@ -85,16 +86,14 @@ open Category
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
-unit₁ leq f = leq-right f
-unit₂ leq f = leq-left f
+unitʳ leq f = leq-right f
+unitˡ leq f = leq-left f
 associativity leq f g h = leq-assoc f g h
 
-
 -- example of a monoid
-addition : Category (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
-identity addition {n} = zero
+addition : Category {x = ℕ → ℕ → ℕ } (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
+identity addition = zero
 _∘_ addition bc ab = bc + ab
-unit₁ addition zero = refl
-unit₁ addition (suc a) =
-
--- TODO how to groupify?
+unitˡ addition a = P.+-identityˡ a
+unitʳ addition a = P.+-identityʳ a
+associativity addition a b c = P.+-assoc c b a
