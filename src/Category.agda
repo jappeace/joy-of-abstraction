@@ -41,45 +41,9 @@ leq-trans : {a b c : ℕ} -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
 leq-trans  bc z≤n = z≤n
 leq-trans  (N.s≤s bc) (N.s≤s ab) = N.s≤s (leq-trans bc ab)
 
-leq-right : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans f (leq-refl a)) ≡ f
-leq-right z≤n = refl
-leq-right { a = suc a } { b = suc b } (N.s≤s bc) =
-  begin
-     leq-trans (N.s≤s bc) (leq-refl (suc a))
-  ≡⟨ cong (λ x → leq-trans (N.s≤s bc) x) refl ⟩
-     leq-trans (N.s≤s bc) (N.s≤s (leq-refl a))
-  ≡⟨⟩
-    N.s≤s (leq-trans (bc) (leq-refl a))
-  ≡⟨ cong (λ x → N.s≤s x) (leq-right bc) ⟩
-    N.s≤s bc
-  ∎
-
-leq-left : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans (leq-refl b) f) ≡ f
-leq-left z≤n = refl
-leq-left { a = suc a } { b = suc b } (N.s≤s bc) =
-  begin
-     leq-trans (leq-refl (suc b)) (N.s≤s bc)
-  ≡⟨ cong (λ x → leq-trans x (N.s≤s bc)) refl ⟩
-     leq-trans (N.s≤s (leq-refl b)) (N.s≤s bc)
-  ≡⟨⟩
-    N.s≤s (leq-trans (leq-refl b) bc)
-  ≡⟨ cong (λ x → N.s≤s x) (leq-left bc) ⟩
-    N.s≤s bc
-  ∎
-
-
-leq-assoc : {a b c d : ℕ} -> ( f : a ≤ b ) ->  ( g : b ≤ c ) ->  ( h : c ≤ d ) -> leq-trans (leq-trans h g) f ≡ leq-trans h (leq-trans g f)
-leq-assoc z≤n g h = refl
-leq-assoc {a = suc a} {b = suc b} {c = suc c} {d = suc d} (N.s≤s ab) (N.s≤s g) (N.s≤s h) =
-  begin
-    leq-trans (leq-trans (N.s≤s h) (N.s≤s g)) (N.s≤s ab)
-  ≡⟨⟩
-    leq-trans (N.s≤s (leq-trans h g)) (N.s≤s ab)
-  ≡⟨⟩
-    N.s≤s (leq-trans (leq-trans h g) ab)
-  ≡⟨ cong N.s≤s (leq-assoc ab g h) ⟩
-    leq-trans (N.s≤s h) (leq-trans (N.s≤s g) (N.s≤s ab))
-  ∎
+leq-prop : {a b : ℕ} (x y : a ≤ b) → x ≡ y
+leq-prop z≤n z≤n = refl
+leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
 open Category
 
@@ -87,9 +51,9 @@ open Category
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
-unitʳ leq f = leq-right f
-unitˡ leq f = leq-left f
-associativity leq f g h = leq-assoc f g h
+unitʳ leq f = leq-prop _ _
+unitˡ leq f = leq-prop _ _
+associativity leq f g h = leq-prop _ _
 
 -- example of a monoid
 -- we need to assign x = Unit.⊤ because that particular type asserts
