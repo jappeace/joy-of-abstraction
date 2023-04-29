@@ -51,6 +51,8 @@ leq-left { a = suc a } { b = suc b } (N.s≤s bc) =
   ≡⟨ cong (λ x → leq-trans (N.s≤s bc) x) refl ⟩
      leq-trans (N.s≤s bc) (N.s≤s (leq-refl a))
   ≡⟨⟩
+    N.s≤s (leq-trans (bc) (leq-refl a))
+  ≡⟨ cong (λ x → N.s≤s x) (leq-left bc) ⟩
     N.s≤s bc
   ∎
 
@@ -59,9 +61,4 @@ open Category
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
-unit₁ leq f =
-  begin
-    f ∘ identity
-  ≡⟨⟩
-    f
-  ∎
+unit₁ leq f = leq-left f
