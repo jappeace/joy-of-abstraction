@@ -43,15 +43,28 @@ leq-trans : {a b c : ℕ} -> (b ≤ c) -> (a ≤ b) -> (a ≤ c)
 leq-trans  bc z≤n = z≤n
 leq-trans  (N.s≤s bc) (N.s≤s ab) = N.s≤s (leq-trans bc ab)
 
-leq-left : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans f (leq-refl a)) ≡ f
-leq-left z≤n = refl
-leq-left { a = suc a } { b = suc b } (N.s≤s bc) =
+leq-right : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans f (leq-refl a)) ≡ f
+leq-right z≤n = refl
+leq-right { a = suc a } { b = suc b } (N.s≤s bc) =
   begin
      leq-trans (N.s≤s bc) (leq-refl (suc a))
   ≡⟨ cong (λ x → leq-trans (N.s≤s bc) x) refl ⟩
      leq-trans (N.s≤s bc) (N.s≤s (leq-refl a))
   ≡⟨⟩
     N.s≤s (leq-trans (bc) (leq-refl a))
+  ≡⟨ cong (λ x → N.s≤s x) (leq-right bc) ⟩
+    N.s≤s bc
+  ∎
+
+leq-left : {a b : ℕ} -> ( f : a ≤ b ) -> (leq-trans (leq-refl b) f) ≡ f
+leq-left z≤n = refl
+leq-left { a = suc a } { b = suc b } (N.s≤s bc) =
+  begin
+     leq-trans (leq-refl (suc b)) (N.s≤s bc)
+  ≡⟨ cong (λ x → leq-trans x (N.s≤s bc)) refl ⟩
+     leq-trans (N.s≤s (leq-refl b)) (N.s≤s bc)
+  ≡⟨⟩
+    N.s≤s (leq-trans (leq-refl b) bc)
   ≡⟨ cong (λ x → N.s≤s x) (leq-left bc) ⟩
     N.s≤s bc
   ∎
@@ -61,4 +74,5 @@ open Category
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
-unit₁ leq f = leq-left f
+unit₁ leq f = leq-right f
+unit₂ leq f = leq-left f
