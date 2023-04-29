@@ -26,11 +26,17 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
     identity : {a : x} -> cat a a
     _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
 
+    inverse : {a b : x} -> cat a b -> cat a b
+
     -- properties
     unitʳ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
     unitˡ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
 
     associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+
+    anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ f
+    anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ f
+
 
 
 leq-refl : (n : N.ℕ) -> n N.≤ n
