@@ -94,6 +94,8 @@ associativity leq f g h = leq-assoc f g h
 -- example of a monoid
 -- we need to assign x = Unit.⊤ because that particular type asserts
 -- there is only ONE object.
+-- any good ol' type on `x` would typecheck since it's used,
+-- but that not be right.
 addition : Category {x = Unit.⊤ } (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
 identity addition = zero
 _∘_ addition bc ab = bc + ab
