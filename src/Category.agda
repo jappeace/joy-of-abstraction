@@ -31,10 +31,6 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
     associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
 
 
-leq-zero' : (n : ℕ) -> (n ≤ zero) → (zero ≤ zero)
-leq-zero' zero _ = z≤n
-leq-zero' (suc _) ()
-
 leq-refl : (n : N.ℕ) -> n N.≤ n
 leq-refl N.zero = N.z≤n
 leq-refl (N.suc n) = N.s≤s (leq-refl n)
@@ -85,9 +81,12 @@ leq-assoc {a = suc a} {b = suc b} {c = suc c} {d = suc d} (N.s≤s ab) (N.s≤s 
 
 open Category
 
+-- example of an equivelance relation
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
 unit₁ leq f = leq-right f
 unit₂ leq f = leq-left f
 associativity leq f g h = leq-assoc f g h
+
+
