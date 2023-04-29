@@ -5,3 +5,5 @@
 
 Some formalizations of Eugenia Cheng's book joy of abstraction.
 This is help to deepen my own understanding of cat 😼.
+
+![cat](./cat.png)
