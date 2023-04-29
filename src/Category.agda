@@ -91,5 +91,6 @@ associativity leq f g h = leq-assoc f g h
 
 
 -- example of a group
-addition : Category (N._+_)
-identity addition {n} = refl
+addition : Category (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
+identity addition {n} = zero
+_∘_ addition bc ab = bc + ab
