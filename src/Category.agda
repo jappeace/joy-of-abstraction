@@ -8,6 +8,7 @@ import Data.Vec as V
 open import Relation.Binary.PropositionalEquality
 import Data.Nat.Base as N
 import Data.Nat.Properties as P
+import Agda.Builtin.Unit as Unit
 open import Data.Nat.Base
 
 open ≡-Reasoning
@@ -91,7 +92,9 @@ unitˡ leq f = leq-left f
 associativity leq f g h = leq-assoc f g h
 
 -- example of a monoid
-addition : Category {x = ℕ → ℕ → ℕ } (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
+-- we need to assign x = Unit.⊤ because that particular type asserts
+-- there is only ONE object.
+addition : Category {x = Unit.⊤ } (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
 identity addition = zero
 _∘_ addition bc ab = bc + ab
 unitˡ addition a = P.+-identityˡ a
