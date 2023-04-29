@@ -90,7 +90,11 @@ unit₂ leq f = leq-left f
 associativity leq f g h = leq-assoc f g h
 
 
--- example of a group
+-- example of a monoid
 addition : Category (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
 identity addition {n} = zero
 _∘_ addition bc ab = bc + ab
+unit₁ addition zero = refl
+unit₁ addition (suc a) =
+
+-- TODO how to groupify?
