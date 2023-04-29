@@ -90,3 +90,6 @@ unit₂ leq f = leq-left f
 associativity leq f g h = leq-assoc f g h
 
 
+-- example of a group
+addition : Category (N._+_)
+identity addition {n} = refl
