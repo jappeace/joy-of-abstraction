@@ -2,6 +2,8 @@
 
 module Joy.Category where
 
+open import Data.Product
+import Algebra.Structures as Struct
 open import Data.Bool.Base hiding (_<_; _≤_)
 open import Data.Vec hiding (map)
 import Data.Vec as V
@@ -14,6 +16,8 @@ open import Data.Nat.Base
 import Data.Integer.Base as Int
 import Data.Integer.Properties as Int
 import Agda.Primitive as Prim
+open import Algebra.Core
+import Relation.Binary.Core as BCore
 
 open ≡-Reasoning
 
@@ -75,7 +79,7 @@ associativity (eq _) refl g h = refl
 -- there is only ONE object.
 -- any good ol' type on `x` would typecheck since it's used,
 -- but that not be right.
-addition : Category {x = Unit.⊤ } (λ a b → ℕ) -- the arrows are the numbers, so we need to neglect the type args
+addition : Category {x = Unit.⊤ } (λ _ _ → ℕ) -- the arrows are the numbers, so we need to neglect the type args
 identity addition = zero
 _∘_ addition bc ab = bc + ab
 unitˡ addition a = P.+-identityˡ a
@@ -104,3 +108,17 @@ _∘_ setsAndFunctions bc ab = λ a → bc (ab a)
 unitˡ setsAndFunctions a = refl
 unitʳ setsAndFunctions a = refl
 associativity setsAndFunctions a b c = refl
+
+-- If you're a monoid, you're a category
+monoidIsCategory : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} ->
+                  (Struct.IsMonoid (_≡_) ∙ ε) → Category {x = Unit.⊤ } (λ _ _ → A)
+identity (monoidIsCategory {ε = ε} m) = ε
+_∘_ (monoidIsCategory {∙ = ∙} m) bc ab = ∙ bc ab
+unitˡ (monoidIsCategory m) cat = (Struct.IsMonoid.identityˡ m) cat
+unitʳ (monoidIsCategory m) cat = Struct.IsMonoid.identityʳ m cat
+associativity (monoidIsCategory m) f g h = Struct.IsSemigroup.assoc (Struct.IsMonoid.isSemigroup m) h g f
+
+
+-- we can now get re-usable categories:
+addIntegersBigly : Category {x = Unit.⊤ } (λ a b → Int.ℤ) -- the arrows are the numbers, so we need to neglect the type args
+addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
