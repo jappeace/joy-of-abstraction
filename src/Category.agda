@@ -46,15 +46,18 @@ leq-prop : {a b : ℕ} (x y : a ≤ b) → x ≡ y
 leq-prop z≤n z≤n = refl
 leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
-open Category
-
-record InvCategory {x : Set} {cat : x -> x -> Set } (base : Category { x = x } cat) : Set1 where
-  constructor invcategory
+record InvCategory {x : Set} (cat : x -> x -> Set ) : Set1 where
+  constructor invCategory
+  field
+    isCategory : Category cat
+  open Category isCategory public
   field
     inverse : {a b : x} -> cat a b -> cat b a
 
     anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ identity
     anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ identity
+
+open Category
 
 
 -- example of an equivelance relation
