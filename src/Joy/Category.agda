@@ -22,7 +22,7 @@ open ≡-Reasoning
 -- data:
 -- objects: things of type 'Set' are our obects
 -- arrows: cat encodes arrows
-record Category {l : Prim.Level } {x : Set l} (cat : x -> x -> Set l)  : Set (Prim.lsuc l) where
+record Category {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2)  : Set (l1 Prim.⊔ l2) where
   constructor category
   field
     -- structure
@@ -91,6 +91,6 @@ unitʳ addIntegers a = Int.+-identityʳ a
 associativity addIntegers a b c = Int.+-assoc c b a
 
 
-setsAndFunctions : {l : Prim.Level } { a b : Set l} -> Category { l = Prim.lsuc l } { x = Set (Prim.lsuc l) } (λ a b -> (a -> b))
+setsAndFunctions : {l : Prim.Level } -> Category { l2 = l } (λ a b -> (a -> b))
 identity (setsAndFunctions) {arg} = λ a -> a
 _∘_ (setsAndFunctions) bc ab = λ a → bc (ab a)
