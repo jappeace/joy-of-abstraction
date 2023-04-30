@@ -26,6 +26,7 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
     identity : {a : x} -> cat a a
     _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
 
+
     -- properties
     unitʳ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
     unitˡ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
@@ -45,7 +46,19 @@ leq-prop : {a b : ℕ} (x y : a ≤ b) → x ≡ y
 leq-prop z≤n z≤n = refl
 leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
+record InvCategory {x : Set} (cat : x -> x -> Set ) : Set1 where
+  constructor invCategory
+  field
+    isCategory : Category cat
+  open Category isCategory public
+  field
+    inverse : {a b : x} -> cat a b -> cat b a
+
+    anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ identity
+    anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ identity
+
 open Category
+
 
 -- example of an equivelance relation
 leq : Category (N._≤_)
