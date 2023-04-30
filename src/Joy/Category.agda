@@ -1,6 +1,6 @@
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Category where
+module Joy.Category where
 
 open import Data.Bool.Base hiding (_<_; _≤_)
 open import Data.Vec hiding (map)
@@ -10,9 +10,10 @@ import Data.Nat.Base as N
 import Data.Nat.Properties as P
 import Agda.Builtin.Unit as Unit
 open import Data.Nat.Base
+import Data.Integer.Base as Int
+import Data.Integer.Properties as Int
 
 open ≡-Reasoning
-
 
 -- A category
 -- we need to make it Set1 to deal with the ominious size issue
@@ -46,17 +47,6 @@ leq-prop : {a b : ℕ} (x y : a ≤ b) → x ≡ y
 leq-prop z≤n z≤n = refl
 leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
-record InvCategory {x : Set} (cat : x -> x -> Set ) : Set1 where
-  constructor invCategory
-  field
-    isCategory : Category cat
-  open Category isCategory public
-  field
-    inverse : {a b : x} -> cat a b -> cat b a
-
-    anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ identity
-    anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ identity
-
 open Category
 
 
@@ -79,3 +69,11 @@ _∘_ addition bc ab = bc + ab
 unitˡ addition a = P.+-identityˡ a
 unitʳ addition a = P.+-identityʳ a
 associativity addition a b c = P.+-assoc c b a
+
+-- same ol trick for integers, so this is also a monoid over addition
+addIntegers : Category {x = Unit.⊤ } (λ a b → Int.ℤ) -- the arrows are the numbers, so we need to neglect the type args
+identity addIntegers = Int.0ℤ
+_∘_ addIntegers bc ab = Int._+_ bc ab
+unitˡ addIntegers a = Int.+-identityˡ a
+unitʳ addIntegers a = Int.+-identityʳ a
+associativity addIntegers a b c = Int.+-assoc c b a
