@@ -119,6 +119,10 @@ unitʳ (monoidIsCategory m) cat = Struct.IsMonoid.identityʳ m cat
 associativity (monoidIsCategory m) f g h = Struct.IsSemigroup.assoc (Struct.IsMonoid.isSemigroup m) h g f
 
 
--- we can now get re-usable categories:
-addIntegersBigly : Category {x = Unit.⊤ } (λ a b → Int.ℤ) -- the arrows are the numbers, so we need to neglect the type args
+-- we can now get re-usable categories,
+-- this is the same as addIntegers.
+-- the difference being we now leverage all definitions from
+-- standard library and put them in monoidIsCateogry,
+-- which will typecheck and assert it's a category.
+addIntegersBigly : Category (λ a b → Int.ℤ)
 addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
