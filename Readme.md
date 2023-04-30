@@ -12,6 +12,5 @@ This is help to deepen my own understanding of cat 😼.
 # TODO
 
 1. try and define an isMonoid y -> Category {x = Unit.T} (\ a b -> y)
-2. define the category for sets and function (eg chapter 12)
 3. try the 60 prime factorization cateogry as well.
    seems a lot less abstract and I can't think of an obvious way of doing this??
