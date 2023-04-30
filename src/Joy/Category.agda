@@ -91,6 +91,16 @@ unitʳ addIntegers a = Int.+-identityʳ a
 associativity addIntegers a b c = Int.+-assoc c b a
 
 
+-- the so called motivating example for category theory
+-- • objects: all sets
+-- • morphisms: a morphism A B is a function A B
+-- • identities: given a set A, the identity is the identity function 1A
+-- • composition: composition of morphisms is composition of functions.
+--
 setsAndFunctions : {l : Prim.Level } -> Category { l2 = l } (λ a b -> (a -> b))
-identity (setsAndFunctions) {arg} = λ a -> a
-_∘_ (setsAndFunctions) bc ab = λ a → bc (ab a)
+identity setsAndFunctions {arg} = λ a -> a
+_∘_ setsAndFunctions bc ab = λ a → bc (ab a)
+-- the proofs are enforced by agda's typesystem.
+unitˡ setsAndFunctions a = refl
+unitʳ setsAndFunctions a = refl
+associativity setsAndFunctions a b c = refl

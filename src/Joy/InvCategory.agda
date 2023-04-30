@@ -46,6 +46,8 @@ anhilationˡ additionGroup n = begin
   ∎
 
 
+-- this seems rather trivial but I wanted two examples of an
+-- invertable catagory.
 eqInv : (x : Set) → InvCategory { x = x } (_≡_)
 isCategory (eqInv x) = eq x
 inverse (eqInv x) relation = sym relation
