@@ -124,5 +124,8 @@ associativity (monoidIsCategory m) f g h = Struct.IsSemigroup.assoc (Struct.IsMo
 -- the difference being we now leverage all definitions from
 -- standard library and put them in monoidIsCateogry,
 -- which will typecheck and assert it's a category.
-addIntegersBigly : Category (λ a b → Int.ℤ)
+addIntegersBigly : Category (λ _ _ → Int.ℤ)
 addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
+
+multIntegers : Category (λ _ _ → Int.ℤ)
+multIntegers = monoidIsCategory Int.*-1-isMonoid
