@@ -61,12 +61,12 @@ associativity leq f g h = leq-prop _ _
 
 -- another example (needed for inverses
 -- here we set x to something, but it should be able to do for anything
-eq : Category { x = ℕ } (_≡_)
-identity eq {n} = refl
-_∘_ eq ab bc = EqCore.trans bc ab
-unitʳ eq f = refl
-unitˡ eq refl = refl
-associativity eq refl g h = refl
+eq : (x : Set) → Category { x = x } (_≡_)
+identity (eq _) {n} = refl
+_∘_ (eq _) ab bc = EqCore.trans bc ab
+unitʳ (eq _) f = refl
+unitˡ (eq _) refl = refl
+associativity (eq _) refl g h = refl
 
 
 -- example of a monoid

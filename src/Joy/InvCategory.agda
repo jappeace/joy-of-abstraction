@@ -44,3 +44,10 @@ anhilationˡ additionGroup n = begin
   ≡⟨ Int.m≡n⇒m-n≡0 n n refl ⟩
    0ℤ
   ∎
+
+
+eqInv : (x : Set) → InvCategory { x = x } (_≡_)
+isCategory (eqInv x) = eq x
+inverse (eqInv x) relation = sym relation
+anhilationʳ (eqInv x) refl = refl
+anhilationˡ (eqInv x) refl = refl
