@@ -6,6 +6,7 @@ open import Data.Bool.Base hiding (_<_; _≤_)
 open import Data.Vec hiding (map)
 import Data.Vec as V
 open import Relation.Binary.PropositionalEquality
+import Relation.Binary.PropositionalEquality.Core as EqCore
 import Data.Nat.Base as N
 import Data.Nat.Properties as P
 import Agda.Builtin.Unit as Unit
@@ -57,6 +58,16 @@ _∘_ leq bc ab = leq-trans bc ab
 unitʳ leq f = leq-prop _ _
 unitˡ leq f = leq-prop _ _
 associativity leq f g h = leq-prop _ _
+
+-- another example (needed for inverses
+-- here we set x to something, but it should be able to do for anything
+eq : Category { x = ℕ } (_≡_)
+identity eq {n} = refl
+_∘_ eq ab bc = EqCore.trans bc ab
+unitʳ eq f = refl
+unitˡ eq refl = refl
+associativity eq refl g h = refl
+
 
 -- example of a monoid
 -- we need to assign x = Unit.⊤ because that particular type asserts
