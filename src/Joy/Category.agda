@@ -13,6 +13,7 @@ import Agda.Builtin.Unit as Unit
 open import Data.Nat.Base
 import Data.Integer.Base as Int
 import Data.Integer.Properties as Int
+import Agda.Primitive as Prim
 
 open ≡-Reasoning
 
@@ -21,7 +22,7 @@ open ≡-Reasoning
 -- data:
 -- objects: things of type 'Set' are our obects
 -- arrows: cat encodes arrows
-record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
+record Category {l : Prim.Level } {x : Set l} (cat : x -> x -> Set l)  : Set (Prim.lsuc l) where
   constructor category
   field
     -- structure
@@ -88,3 +89,8 @@ _∘_ addIntegers bc ab = Int._+_ bc ab
 unitˡ addIntegers a = Int.+-identityˡ a
 unitʳ addIntegers a = Int.+-identityʳ a
 associativity addIntegers a b c = Int.+-assoc c b a
+
+
+setsAndFunctions : {l : Prim.Level } { a b : Set l} -> Category { l = Prim.lsuc l } { x = Set (Prim.lsuc l) } (λ a b -> (a -> b))
+identity (setsAndFunctions) {arg} = λ a -> a
+_∘_ (setsAndFunctions) bc ab = λ a → bc (ab a)
