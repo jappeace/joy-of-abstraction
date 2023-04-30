@@ -26,12 +26,17 @@ record Category {x : Set} (cat : x -> x -> Set)  : Set1 where
     identity : {a : x} -> cat a a
     _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
 
+    inverse : {a b : x} -> cat a b -> cat a b
 
     -- properties
     unitʳ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
     unitˡ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
 
     associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+
+    anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ f
+    anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ f
+
 
 
 leq-refl : (n : N.ℕ) -> n N.≤ n
@@ -47,15 +52,6 @@ leq-prop z≤n z≤n = refl
 leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
 open Category
-
-record InvCategory {x : Set} {cat : x -> x -> Set } (base : Category { x = x } cat) : Set1 where
-  constructor invcategory
-  field
-    inverse : {a b : x} -> cat a b -> cat b a
-
-    anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ identity
-    anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ identity
-
 
 -- example of an equivelance relation
 leq : Category (N._≤_)
