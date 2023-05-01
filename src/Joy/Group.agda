@@ -1,6 +1,6 @@
 {-# OPTIONS --allow-unsolved-metas #-}
 
-module Joy.InvCategory where
+module Joy.Group where
 
 import Algebra.Structures as Struct
 open import Algebra.Core
@@ -19,7 +19,10 @@ open ≡-Reasoning
 -- this is an extension of a category with invertable arrows.
 -- this allows encoding of groups for example.
 -- I think this means our category has a dual? I'm not sure
-record InvCategory {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2 ) : Set (l1 Prim.⊔ l2) where
+-- it's a groupoid and not a group because this record put no restriction
+-- on the count of objects, the individual definitions have to make it a Group by
+-- Groupoid {x = Unit.⊤ }
+record Groupoid {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2 ) : Set (l1 Prim.⊔ l2) where
   constructor invCategory
   field
     isCategory : Category cat
@@ -30,14 +33,14 @@ record InvCategory {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2 ) 
     anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ identity
     anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ identity
 
-open InvCategory
+open Groupoid
 
 -- makes a group out of the addition monoid
--- additionGroup : InvCategory {x = Unit.⊤ } (λ a b → ℕ)
+-- additionGroup : Groupoid {x = Unit.⊤ } (λ a b → ℕ)
 -- isCategory additionGroup = addition
 -- inverse additionGroup a = 0 - a -- bitch, don't work, you can't define this on just naturals
 
-additionGroup : InvCategory {x = Unit.⊤ } (λ _ _ → ℤ)
+additionGroup : Groupoid {x = Unit.⊤ } (λ _ _ → ℤ)
 isCategory additionGroup = addIntegers
 inverse additionGroup a = - a
 anhilationʳ additionGroup n = Int.m≡n⇒m-n≡0 n n refl
@@ -52,20 +55,20 @@ anhilationˡ additionGroup n = begin
 
 -- this seems rather trivial but I wanted two examples of an
 -- invertable catagory.
-eqInv : (x : Set) → InvCategory { x = x } (_≡_)
+eqInv : (x : Set) → Groupoid { x = x } (_≡_)
 isCategory (eqInv x) = eq x
 inverse (eqInv x) relation = sym relation
 anhilationʳ (eqInv x) refl = refl
 anhilationˡ (eqInv x) refl = refl
 
 -- A group is an inverse category
-groupIsInvCategory : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} {_⁻¹ : Op₁ A} ->
-                  (Struct.IsGroup (_≡_) ∙ ε _⁻¹) → InvCategory {x = Unit.⊤ } (λ _ _ → A)
-isCategory (groupIsInvCategory m) = monoidIsCategory (Struct.IsGroup.isMonoid m)
-inverse (groupIsInvCategory {_⁻¹ = _⁻¹} m) relation = relation ⁻¹
-anhilationʳ (groupIsInvCategory m) r = Struct.IsGroup.inverseʳ m r
-anhilationˡ (groupIsInvCategory m) l = Struct.IsGroup.inverseˡ m l
+groupIsGroupoid : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} {_⁻¹ : Op₁ A} ->
+                  (Struct.IsGroup (_≡_) ∙ ε _⁻¹) → Groupoid {x = Unit.⊤ } (λ _ _ → A)
+isCategory (groupIsGroupoid m) = monoidIsCategory (Struct.IsGroup.isMonoid m)
+inverse (groupIsGroupoid {_⁻¹ = _⁻¹} m) relation = relation ⁻¹
+anhilationʳ (groupIsGroupoid m) r = Struct.IsGroup.inverseʳ m r
+anhilationˡ (groupIsGroupoid m) l = Struct.IsGroup.inverseˡ m l
 
 
-addIntegersBiglyGroup : InvCategory (λ _ _ → ℤ)
-addIntegersBiglyGroup = groupIsInvCategory Int.+-0-isGroup
+addIntegersBiglyGroup : Groupoid (λ _ _ → ℤ)
+addIntegersBiglyGroup = groupIsGroupoid Int.+-0-isGroup
