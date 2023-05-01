@@ -17,9 +17,7 @@ import Agda.Primitive as Prim
 open ≡-Reasoning
 
 -- this is an extension of a category with invertable arrows.
--- this allows encoding of groups for example.
--- I think this means our category has a dual? I'm not sure
--- it's a groupoid and not a group because this record put no restriction
+-- It's a groupoid and not a group because this record put no restriction
 -- on the count of objects, the individual definitions have to make it a Group by
 -- Groupoid {x = Unit.⊤ }
 record Groupoid {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2 ) : Set (l1 Prim.⊔ l2) where
