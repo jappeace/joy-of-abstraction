@@ -13,3 +13,11 @@ This is help to deepen my own understanding of cat 😼.
 
 3. try the 60 prime factorization cateogry as well.
    seems a lot less abstract and I can't think of an obvious way of doing this??
+
+
+intersection monoid?
+union monoid?
+difference monoid?
+
+can I have union on sets in types in agda?
+or is that either?
