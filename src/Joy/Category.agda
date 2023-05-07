@@ -23,18 +23,19 @@ open ≡-Reasoning
 
 -- A category
 -- we need to make it Set1 to deal with the ominious size issue
--- data:
--- objects: things of type 'Set' are our obects
--- arrows: cat encodes arrows
+-- https://youtu.be/f2qC6mid1XE?t=1244
+-- data: the basic building blocks consisting of
+-- + objects: things of type 'Set' are our obects
+-- + arrows: cat encodes arrows
 record Category {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2)  : Set (l1 Prim.⊔ l2) where
   constructor category
   field
-    -- structure
+    -- structure, things you do with the data.
     identity : {a : x} -> cat a a
     _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
 
 
-    -- properties
+    -- properties, the rules the structure satisfies
     unitʳ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
     unitˡ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
 
