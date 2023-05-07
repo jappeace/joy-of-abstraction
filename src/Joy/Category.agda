@@ -22,8 +22,7 @@ import Relation.Binary.Core as BCore
 open ≡-Reasoning
 
 -- A category
--- we need to make it Set1 to deal with the ominious size issue
--- https://youtu.be/f2qC6mid1XE?t=1244
+-- data/structure/properties is explained here: https://youtu.be/f2qC6mid1XE?t=1244
 -- data: the basic building blocks consisting of
 -- + objects: things of type 'Set' are our obects
 -- + arrows: cat encodes arrows
