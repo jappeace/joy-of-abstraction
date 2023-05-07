@@ -21,3 +21,9 @@ difference monoid?
 
 can I have union on sets in types in agda?
 or is that either?
+
+
+I think we should the same for GrP, and poset category 
+topology maybe to difficult.
+
+we'll definitely need a functor
