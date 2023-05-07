@@ -130,8 +130,3 @@ addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
 multIntegers : Category (λ _ _ → Int.ℤ)
 multIntegers = monoidIsCategory Int.*-1-isMonoid
 
-
-usingAddition : _∘_ addition 5 3 ≡ 8
-usingAddition = refl
-
-mnd : (monoidHomomorphism cat1 identity ≡ cat2 identity) -> (λ a b -> monoidHomomorphism (cat2 _∘_ a b) ≡ (cat2 _∘_ (monoidHomomorphism a) (monoidHomomorphism b) ))  (monoidHomomorphism : A -> B) -> cat1 : Category {x = Unit.⊤} (λ _ _ → A) -> cat2 : Category {x = Unit.⊤} (λ _ _ → B) -> Category {x = cat1} monoidHomomorphism
