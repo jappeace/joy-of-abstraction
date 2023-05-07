@@ -129,3 +129,7 @@ addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
 
 multIntegers : Category (λ _ _ → Int.ℤ)
 multIntegers = monoidIsCategory Int.*-1-isMonoid
+
+
+usingAddition : _∘_ addition 5 3 ≡ 8
+usingAddition = refl
