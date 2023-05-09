@@ -20,16 +20,16 @@ open ≡-Reasoning
 -- It's a groupoid and not a group because this record put no restriction
 -- on the count of objects, the individual definitions have to make it a Group by
 -- Groupoid {x = Unit.⊤ }
-record Groupoid {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2 ) : Set (l1 Prim.⊔ l2) where
+record Groupoid {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2 ) : Set (l1 Prim.⊔ l2) where
   constructor invCategory
   field
-    isCategory : Category cat
+    isCategory : Category arrow
   open Category isCategory public
   field
-    inverse : {a b : x} -> cat a b -> cat b a
+    inverse : {a b : object} -> arrow a b -> arrow b a
 
-    anhilationʳ : {a b : x} (f : cat a b) -> f ∘ inverse f  ≡ identity
-    anhilationˡ : {a b : x} (f : cat a b) -> inverse f ∘ f ≡ identity
+    anhilationʳ : {a b : object} (f : arrow a b) -> f ∘ inverse f  ≡ identity
+    anhilationˡ : {a b : object} (f : arrow a b) -> inverse f ∘ f ≡ identity
 
 open Groupoid
 
@@ -38,7 +38,7 @@ open Groupoid
 -- isCategory additionGroup = addition
 -- inverse additionGroup a = 0 - a -- bitch, don't work, you can't define this on just naturals
 
-additionGroup : Groupoid {x = Unit.⊤ } (λ _ _ → ℤ)
+additionGroup : Groupoid {object = Unit.⊤ } (λ _ _ → ℤ)
 isCategory additionGroup = addIntegers
 inverse additionGroup a = - a
 anhilationʳ additionGroup n = Int.m≡n⇒m-n≡0 n n refl
@@ -53,7 +53,7 @@ anhilationˡ additionGroup n = begin
 
 -- this seems rather trivial but I wanted two examples of an
 -- invertable catagory.
-eqInv : (x : Set) → Groupoid { x = x } (_≡_)
+eqInv : (x : Set) → Groupoid { object = x } (_≡_)
 isCategory (eqInv x) = eq x
 inverse (eqInv x) relation = sym relation
 anhilationʳ (eqInv x) refl = refl
@@ -61,7 +61,7 @@ anhilationˡ (eqInv x) refl = refl
 
 -- A group is an inverse category
 groupIsGroupoid : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} {_⁻¹ : Op₁ A} ->
-                  (Struct.IsGroup (_≡_) ∙ ε _⁻¹) → Groupoid {x = Unit.⊤ } (λ _ _ → A)
+                  (Struct.IsGroup (_≡_) ∙ ε _⁻¹) → Groupoid {object = Unit.⊤ } (λ _ _ → A)
 isCategory (groupIsGroupoid m) = monoidIsCategory (Struct.IsGroup.isMonoid m)
 inverse (groupIsGroupoid {_⁻¹ = _⁻¹} m) relation = relation ⁻¹
 anhilationʳ (groupIsGroupoid m) r = Struct.IsGroup.inverseʳ m r

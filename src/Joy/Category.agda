@@ -26,19 +26,19 @@ open ≡-Reasoning
 -- data: the basic building blocks consisting of
 -- + objects: things of type 'Set' are our obects
 -- + arrows: cat encodes arrows
-record Category {l1 l2 : Prim.Level } {x : Set l1} (cat : x -> x -> Set l2)  : Set (l1 Prim.⊔ l2) where
+record Category {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2)  : Set (l1 Prim.⊔ l2) where
   constructor category
   field
     -- structure, things you do with the data.
-    identity : {a : x} -> cat a a
-    _∘_ : {a b c : x} ->  cat b c -> cat a b -> cat a c
+    identity : {a : object} -> arrow a a
+    _∘_ : {a b c : object} ->  arrow b c -> arrow a b -> arrow a c
 
 
     -- properties, the rules the structure satisfies
-    unitʳ : {a b : x} (f : cat a b) -> f ∘ identity ≡ f
-    unitˡ : {a b : x} (f : cat a b) -> identity ∘ f ≡ f
+    unitʳ : {a b : object} (f : arrow a b) -> f ∘ identity ≡ f
+    unitˡ : {a b : object} (f : arrow a b) -> identity ∘ f ≡ f
 
-    associativity : {a b c d : x} (f : cat a b) (g : cat b c) (h : cat c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+    associativity : {a b c d : object} (f : arrow a b) (g : arrow b c) (h : arrow c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
 
 
 leq-refl : (n : N.ℕ) -> n N.≤ n
@@ -66,7 +66,7 @@ associativity leq f g h = leq-prop _ _
 
 -- another example (needed for inverses
 -- here we set x to something, but it should be able to do for anything
-eq : (x : Set) → Category { x = x } (_≡_)
+eq : (x : Set) → Category { object = x } (_≡_)
 identity (eq _) {n} = refl
 _∘_ (eq _) ab bc = EqCore.trans bc ab
 unitʳ (eq _) f = refl
@@ -79,7 +79,7 @@ associativity (eq _) refl g h = refl
 -- there is only ONE object.
 -- any good ol' type on `x` would typecheck since it's used,
 -- but that not be right.
-addition : Category {x = Unit.⊤ } (λ _ _ → ℕ) -- the arrows are the numbers, so we need to neglect the type args
+addition : Category {object = Unit.⊤ } (λ _ _ → ℕ) -- the arrows are the numbers, so we need to neglect the type args
 identity addition = zero
 _∘_ addition bc ab = bc + ab
 unitˡ addition a = P.+-identityˡ a
@@ -87,7 +87,7 @@ unitʳ addition a = P.+-identityʳ a
 associativity addition a b c = P.+-assoc c b a
 
 -- same ol trick for integers, so this is also a monoid over addition
-addIntegers : Category {x = Unit.⊤ } (λ a b → Int.ℤ) -- the arrows are the numbers, so we need to neglect the type args
+addIntegers : Category {object = Unit.⊤ } (λ a b → Int.ℤ) -- the arrows are the numbers, so we need to neglect the type args
 identity addIntegers = Int.0ℤ
 _∘_ addIntegers bc ab = Int._+_ bc ab
 unitˡ addIntegers a = Int.+-identityˡ a
@@ -111,7 +111,7 @@ associativity setsAndFunctions a b c = refl
 
 -- If you're a monoid, you're a category
 monoidIsCategory : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} ->
-                  (Struct.IsMonoid (_≡_) ∙ ε) → Category {x = Unit.⊤ } (λ _ _ → A)
+                  (Struct.IsMonoid (_≡_) ∙ ε) → Category {object = Unit.⊤ } (λ _ _ → A)
 identity (monoidIsCategory {ε = ε} m) = ε
 _∘_ (monoidIsCategory {∙ = ∙} m) bc ab = ∙ bc ab
 unitˡ (monoidIsCategory m) cat = (Struct.IsMonoid.identityˡ m) cat
