@@ -22,6 +22,14 @@ open import Joy.Category
 
 open ≡-Reasoning
 
+-- how does it know what HomoMorphism should be used with what monoid?
+-- eg if I have a Monoid of addition over integers
+-- and try to compose that with a monoid for union in sets,
+-- how is that type safe with existentials?
+-- how is the homomorpism constructed?
+
+mnd : Category Monoid HomoMorphism
+
 -- A homomorphism
 record HomoMorphism {l2 : Prim.Level} {A B : Set l2} (cat1 : Category {x = Unit.⊤} (λ _ _ → A)) (cat2 : Category {x = Unit.⊤} (λ _ _ → B)) : Set l2 where
   constructor homomorphism
