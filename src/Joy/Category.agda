@@ -53,6 +53,9 @@ leq-prop : {a b : ℕ} (x y : a ≤ b) → x ≡ y
 leq-prop z≤n z≤n = refl
 leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
+Monoid : {l2 : Prim.Level } (arrow : Set l2) -> Set l2
+Monoid arrow = Category {object = Unit.⊤ } (λ _ _ -> arrow)
+
 open Category
 
 
@@ -79,7 +82,7 @@ associativity (eq _) refl g h = refl
 -- there is only ONE object.
 -- any good ol' type on `x` would typecheck since it's used,
 -- but that not be right.
-addition : Category {object = Unit.⊤ } (λ _ _ → ℕ) -- the arrows are the numbers, so we need to neglect the type args
+addition : Monoid ℕ -- the arrows are the numbers, so we need to neglect the type args
 identity addition = zero
 _∘_ addition bc ab = bc + ab
 unitˡ addition a = P.+-identityˡ a
@@ -87,7 +90,7 @@ unitʳ addition a = P.+-identityʳ a
 associativity addition a b c = P.+-assoc c b a
 
 -- same ol trick for integers, so this is also a monoid over addition
-addIntegers : Category {object = Unit.⊤ } (λ a b → Int.ℤ) -- the arrows are the numbers, so we need to neglect the type args
+addIntegers : Monoid Int.ℤ -- the arrows are the numbers, so we need to neglect the type args
 identity addIntegers = Int.0ℤ
 _∘_ addIntegers bc ab = Int._+_ bc ab
 unitˡ addIntegers a = Int.+-identityˡ a
@@ -111,7 +114,7 @@ associativity setsAndFunctions a b c = refl
 
 -- If you're a monoid, you're a category
 monoidIsCategory : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} ->
-                  (Struct.IsMonoid (_≡_) ∙ ε) → Category {object = Unit.⊤ } (λ _ _ → A)
+                  (Struct.IsMonoid (_≡_) ∙ ε) → Monoid A
 identity (monoidIsCategory {ε = ε} m) = ε
 _∘_ (monoidIsCategory {∙ = ∙} m) bc ab = ∙ bc ab
 unitˡ (monoidIsCategory m) cat = (Struct.IsMonoid.identityˡ m) cat
@@ -124,9 +127,9 @@ associativity (monoidIsCategory m) f g h = Struct.IsSemigroup.assoc (Struct.IsMo
 -- the difference being we now leverage all definitions from
 -- standard library and put them in monoidIsCateogry,
 -- which will typecheck and assert it's a category.
-addIntegersBigly : Category (λ _ _ → Int.ℤ)
+addIntegersBigly : Monoid Int.ℤ
 addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
 
-multIntegers : Category (λ _ _ → Int.ℤ)
+multIntegers : Monoid Int.ℤ
 multIntegers = monoidIsCategory Int.*-1-isMonoid
 

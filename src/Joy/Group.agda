@@ -31,6 +31,9 @@ record Groupoid {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> objec
     anhilationʳ : {a b : object} (f : arrow a b) -> f ∘ inverse f  ≡ identity
     anhilationˡ : {a b : object} (f : arrow a b) -> inverse f ∘ f ≡ identity
 
+Group : {l2 : Prim.Level } (arrow : Set l2) -> Set l2
+Group arrow = Groupoid {object = Unit.⊤ } (λ _ _ → arrow)
+
 open Groupoid
 
 -- makes a group out of the addition monoid
@@ -38,7 +41,7 @@ open Groupoid
 -- isCategory additionGroup = addition
 -- inverse additionGroup a = 0 - a -- bitch, don't work, you can't define this on just naturals
 
-additionGroup : Groupoid {object = Unit.⊤ } (λ _ _ → ℤ)
+additionGroup : Group ℤ
 isCategory additionGroup = addIntegers
 inverse additionGroup a = - a
 anhilationʳ additionGroup n = Int.m≡n⇒m-n≡0 n n refl
@@ -61,12 +64,12 @@ anhilationˡ (eqInv x) refl = refl
 
 -- A group is an inverse category
 groupIsGroupoid : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} {_⁻¹ : Op₁ A} ->
-                  (Struct.IsGroup (_≡_) ∙ ε _⁻¹) → Groupoid {object = Unit.⊤ } (λ _ _ → A)
+                  (Struct.IsGroup (_≡_) ∙ ε _⁻¹) → Group A
 isCategory (groupIsGroupoid m) = monoidIsCategory (Struct.IsGroup.isMonoid m)
 inverse (groupIsGroupoid {_⁻¹ = _⁻¹} m) relation = relation ⁻¹
 anhilationʳ (groupIsGroupoid m) r = Struct.IsGroup.inverseʳ m r
 anhilationˡ (groupIsGroupoid m) l = Struct.IsGroup.inverseˡ m l
 
 
-addIntegersBiglyGroup : Groupoid (λ _ _ → ℤ)
+addIntegersBiglyGroup : Group ℤ
 addIntegersBiglyGroup = groupIsGroupoid Int.+-0-isGroup
