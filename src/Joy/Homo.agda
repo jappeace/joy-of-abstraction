@@ -50,11 +50,21 @@ fun identityHomo a = a
 preserveStructure identityHomo = refl
 identityEquality identityHomo = refl
 
+compose : {l2 : Prim.Level} {arrow1 arrow2 arrow3 : Set l2 } {ma : Monoid arrow1 } {mb : Monoid arrow2 } {mc : Monoid arrow3 } -> HomoMorphism mb mc -> HomoMorphism ma mb -> HomoMorphism ma mc
+fun (compose bc ab) A = fun bc (fun ab A)
+preserveStructure (compose {ma = ma} {mc = mc} bc ab) {a = a} {b = c}  = begin
+  fun (compose bc ab) (Category._∘_ ma a c) -- cat1 is a
+  ≡⟨⟩
+  Category._∘_ mc ((fun (compose bc ab)) a) ((fun (compose bc ab)) c) -- cat2 is c
+  ∎
+
+
 module Mnd where
   open Category
 
   mnd : {l2 : Prim.Level} -> ∀ (arrow : Set l2 ) -> Category {object  = Monoid arrow} HomoMorphism
   identity (mnd arrow) = identityHomo{arrow = arrow}
+  _∘_ (mnd arrow) bc ab = compose bc ab
 
 
 -- mnd : {l1 l2 : Prim.Level} {A B : Set l2}
