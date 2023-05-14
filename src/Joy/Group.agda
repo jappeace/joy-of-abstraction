@@ -37,9 +37,9 @@ Group arrow = Groupoid {object = Unit.⊤ } (λ _ _ → arrow)
 open Groupoid
 
 -- makes a group out of the addition monoid
--- additionGroup : Groupoid {x = Unit.⊤ } (λ a b → ℕ)
+-- additionGroup : Group ℕ
 -- isCategory additionGroup = addition
--- inverse additionGroup a = 0 - a -- bitch, don't work, you can't define this on just naturals
+-- inverse additionGroup a = 0 - a -- don't work, you can't define this on just naturals
 
 additionGroup : Group ℤ
 isCategory additionGroup = addIntegers
