@@ -30,6 +30,8 @@ open ≡-Reasoning
 
 
 -- A homomorphism
+-- TODO I think I temporaryly basterdised this by just making it work
+-- on monids, I should relax the constraints later on for functors.
 record HomoMorphism {l2 : Prim.Level} {A B : Set l2} (cat1 : Monoid A) (cat2 : Monoid B) : Set l2 where
   constructor homomorphism
   open Category cat1
