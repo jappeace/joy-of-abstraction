@@ -16,6 +16,7 @@ import Agda.Primitive as Prim
 
 open ≡-Reasoning
 
+-- TODO rexpress in terms of Iso?
 -- this is an extension of a category with invertable arrows.
 -- It's a groupoid and not a group because this record put no restriction
 -- on the count of objects, the individual definitions have to make it a Group by
