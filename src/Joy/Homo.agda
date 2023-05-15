@@ -52,12 +52,27 @@ identityEquality identityHomo = refl
 
 compose : {l2 : Prim.Level} {arrow1 arrow2 arrow3 : Set l2 } {ma : Monoid arrow1 } {mb : Monoid arrow2 } {mc : Monoid arrow3 } -> HomoMorphism mb mc -> HomoMorphism ma mb -> HomoMorphism ma mc
 fun (compose bc ab) A = fun bc (fun ab A)
-preserveStructure (compose {ma = ma} {mc = mc} bc ab) {a = a} {b = c}  = begin
+preserveStructure (compose {ma = ma} {mb = mb} {mc = mc} bc ab) {a = a} {b = c}  = begin
   fun (compose bc ab) (Category._∘_ ma a c) -- cat1 is a
   ≡⟨⟩
+  fun bc ((fun ab) (Category._∘_ ma a c))
+  ≡⟨ cong (λ x -> fun bc x) (preserveStructure ab) ⟩
+  fun bc ((Category._∘_ mb) (fun ab a) (fun ab c))
+  ≡⟨ preserveStructure bc ⟩
+  Category._∘_ mc (fun bc (fun ab a)) (fun bc (fun ab c))
+  ≡⟨⟩
+
   Category._∘_ mc ((fun (compose bc ab)) a) ((fun (compose bc ab)) c) -- cat2 is c
   ∎
-
+identityEquality (compose {ma = ma} {mb = mb} {mc = mc} bc ab) = begin
+    fun (compose bc ab) (Category.identity ma)
+  ≡⟨⟩
+    fun bc (fun ab (Category.identity ma))
+  ≡⟨ cong (\x -> fun bc x) (identityEquality ab) ⟩
+    fun bc (Category.identity mb)
+  ≡⟨ identityEquality bc ⟩
+    Category.identity mc
+  ∎
 
 module Mnd where
   open Category
