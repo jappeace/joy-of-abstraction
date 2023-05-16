@@ -74,12 +74,23 @@ identityEquality (compose {ma = ma} {mb = mb} {mc = mc} bc ab) = begin
     Category.identity mc
   ∎
 
+
+
 module Mnd where
   open Category
 
   mnd : {l2 : Prim.Level} -> ∀ (arrow : Set l2 ) -> Category {object  = Monoid arrow} HomoMorphism
   identity (mnd arrow) = identityHomo{arrow = arrow}
   _∘_ (mnd arrow) bc ab = compose bc ab
+  unitʳ (mnd arrow) (f1) = begin
+      _∘_ (mnd arrow) f1 (identity (mnd arrow))
+    ≡⟨⟩
+       compose f1 (identity (mnd arrow))
+    ≡⟨⟩
+       compose f1 identityHomo
+    ≡⟨⟩
+      f1
+    ∎
 
 
 -- mnd : {l1 l2 : Prim.Level} {A B : Set l2}
