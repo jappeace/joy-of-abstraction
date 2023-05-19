@@ -27,3 +27,9 @@ record IsoMorphism {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> ob
 
     anhilationʳ : {a b : object} (f : arrow a b) -> f ∘ inverse f  ≡ identity { a = b }
     anhilationˡ : {a b : object} (f : arrow a b) -> inverse f ∘ f ≡ identity { a = a }
+
+
+-- T 14.10 Can you prove that a function is an isomorphism of sets if and only if it is a bijection?
+-- I guess two thigns are asked,
+-- 1. if you're an isomorpism, then you're a bijection
+-- 2. if you're an bijection, then you're an isomorphism.
