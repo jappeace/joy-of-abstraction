@@ -21,6 +21,24 @@ import Relation.Binary.Core as BCore
 
 open ≡-Reasoning
 
+-- agda is to autistic on equivelence.
+-- it'll try to set proofs equal to eachother in case of Homo.
+-- we need to be able to weaken this definition
+--
+-- they do that here as well.
+-- https://github.com/agda/agda-categories/blob/master/src/Categories/Category/Core.agda#L21
+--
+-- but I don't want to infect my category with this agda centric technicallity
+-- to much, so I put this in a seperate record
+record UserEq {l1 l2 : Prim.Level } (A B : Set l1) : Set (l1  Prim.⊔ l2) where
+  constructor userEq
+  open BCore
+  field
+    _≈_ : ∀ {A B} → Rel (A ⇒ B) l2
+    -- TODO need to add, reflexive, symetric and transative
+
+
+
 -- A category
 -- data/structure/properties is explained here: https://youtu.be/f2qC6mid1XE?t=1244
 -- data: the basic building blocks consisting of
@@ -29,16 +47,20 @@ open ≡-Reasoning
 record Category {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2)  : Set (l1 Prim.⊔ l2) where
   constructor category
   field
+    -- TODO need to add userdefinedEq
+    hasEq  : {a b : object } -> UserEq a b
+
     -- structure, things you do with the data.
     identity : {a : object} -> arrow a a
     _∘_ : {a b c : object} ->  arrow b c -> arrow a b -> arrow a c
-
 
     -- properties, the rules the structure satisfies
     unitʳ : {a b : object} (f : arrow a b) -> f ∘ identity ≡ f
     unitˡ : {a b : object} (f : arrow a b) -> identity ∘ f ≡ f
 
     associativity : {a b c d : object} (f : arrow a b) (g : arrow b c) (h : arrow c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+
+
 
 
 leq-refl : (n : N.ℕ) -> n N.≤ n
@@ -133,3 +155,8 @@ addIntegersBigly = monoidIsCategory  Int.+-0-isMonoid
 multIntegers : Monoid Int.ℤ
 multIntegers = monoidIsCategory Int.*-1-isMonoid
 
+
+-- you can think about it like trains!!!
+-- the initial and terminal station
+-- you can take a train from the initial to terminal station,
+-- but you've to move trough all other stations (eg composition).

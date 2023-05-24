@@ -21,6 +21,14 @@ open ≡-Reasoning
 -- It's a groupoid and not a group because this record put no restriction
 -- on the count of objects, the individual definitions have to make it a Group by
 -- Groupoid {x = Unit.⊤ }
+--
+--
+-- you can think about it like trains!!!
+-- the initial and terminal station
+-- you can take a train from the initial to terminal station,
+-- but you've to move trough all other stations (eg composition).
+--
+--
 record Groupoid {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2 ) : Set (l1 Prim.⊔ l2) where
   constructor invCategory
   field
