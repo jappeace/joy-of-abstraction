@@ -16,6 +16,26 @@ import Agda.Primitive as Prim
 
 open ≡-Reasoning
 
+-- this is a categorical version of injectivity
+--
+-- A function f : A B is called injective if
+-- ∀x, y ∈ A, f (x) = f (y) ⇒ x = y.
+--
+-- A morphism f = a → b in a category C is called a monomor-
+-- phism or monic if, given any fork diagram as above in C,
+--  f . s = f . t => s = t
+record Monomorphism {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2 ) {isCategory : Category arrow} : Set (l1 Prim.⊔ l2) where
+  constructor monic
+  open Category isCategory public
+    field
+      isMonic : { a b m : object } { f : arrow a b } { s t : arrow m a } -> f ∘ s ≡ f ∘ t -> s ≡ t
+
+
+
+-- A function f : A B is called surjective if
+-- ∀b ∈ B ∃ a ∈ A such that f (a) = b
+--
+
 -- TODO I'm not sure if this is right,
 -- I just want be able t odefine this for a single arrow of a category
 -- an arrow that can be inverted and result in identities
