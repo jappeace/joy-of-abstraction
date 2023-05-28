@@ -75,46 +75,19 @@ identityEquality (compose {ma = ma} {mb = mb} {mc = mc} bc ab) = begin
   ∎
 
 
-
-rightUnit : {l2 : Prim.Level} {arrow1 arrow2 arrow3 : Set l2 } {ma : Monoid arrow1 } {mb : Monoid arrow2 } {mc : Monoid arrow3 } -> HomoMorphism mb mc -> HomoMorphism mb mb -> HomoMorphism mb mc
-fun (rightUnit bc bb) A = fun bc A
-preserveStructure (rightUnit bc bb) = preserveStructure bc
-identityEquality (rightUnit bc bb) = identityEquality bc
-
-rightUnitLaw : {l1 : Prim.Level} {arrow2 arrow3 : Set l1 } {mb : Monoid arrow2 } {mc : Monoid arrow3 } -> (arg1 : (HomoMorphism mb mc)) -> compose arg1 identityHomo ≡ arg1
-rightUnitLaw {mb = mb} {mc = mc} (homomorphism fun preserve identity) = begin
-    compose (homomorphism fun preserve identity) identityHomo
-  ≡⟨⟩
-    (homomorphism fun preserve identity)
-  ∎
-
-
 module Mnd where
   open Category
 
   mnd : {l2 : Prim.Level} -> ∀ (arrow : Set l2 ) -> Category {object  = Monoid arrow} HomoMorphism
   identity (mnd arrow) = identityHomo{arrow = arrow}
   _∘_ (mnd arrow) bc ab = compose bc ab
-  unitʳ (mnd arrow) f1 = begin
-      _∘_ (mnd arrow) f1 (identity (mnd arrow))
-    ≡⟨⟩
-       compose f1 (identity (mnd arrow))
-    ≡⟨⟩
-       compose f1 identityHomo
-    ≡⟨ identityEquality f1 identityHomo ⟩
-      f1
-    ∎
+  _≈_ (mnd arrow) a b = fun a ≡ fun b
+  equiv (mnd arrow) = record
+    { refl = refl
+    ; sym = sym
+    ; trans = trans
+    }
+  unitʳ (mnd arrow) f1 = refl
+  unitˡ (mnd arrow) f1 = refl
+  associativity (mnd arrow) a b c = refl
 
-
--- mnd : {l1 l2 : Prim.Level} {A B : Set l2}
---   {cat1 : Category {x = Unit.⊤} (λ _ _ → A)}
---   {cat2 : Category {x = Unit.⊤} (λ _ _ → B)} ->
---   (homo : HomoMorphism cat1 cat2)
---   -> Category {l1 =  l1 Prim.⊔ l2} {l2 = Prim.lsuc l2} {x = cat1} (λ a b -> cat2)
-
-
--- T 14.11
--- Can you show that a morphism A f B of monoids is an isomor-
--- phism in the category of monoids if and only if it is a bijective homomor-
--- phism? The content of this is that we don’t have to insist on the inverse being
--- structure-preserving because it will automatically follow.
