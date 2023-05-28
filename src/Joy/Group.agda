@@ -29,18 +29,18 @@ open ≡-Reasoning
 -- but you've to move trough all other stations (eg composition).
 --
 --
-record Groupoid {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2 ) : Set (l1 Prim.⊔ l2) where
+record Groupoid {l1 l2 l3 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2 ) : Set (l1 Prim.⊔ l2 Prim.⊔ (Prim.lsuc l3)) where
   constructor invCategory
   field
-    isCategory : Category arrow
+    isCategory : Category { l3 = l3 } arrow
   open Category isCategory public
   field
     inverse : {a b : object} -> arrow a b -> arrow b a
 
-    anhilationʳ : {a b : object} (f : arrow a b) -> f ∘ inverse f  ≡ identity
-    anhilationˡ : {a b : object} (f : arrow a b) -> inverse f ∘ f ≡ identity
+    anhilationʳ : {a b : object} (f : arrow a b) -> f ∘ inverse f  ≈ identity
+    anhilationˡ : {a b : object} (f : arrow a b) -> inverse f ∘ f ≈ identity
 
-Group : {l2 : Prim.Level } (arrow : Set l2) -> Set l2
+Group : {l2 : Prim.Level } (arrow : Set l2) -> Set (Prim.lsuc l2)
 Group arrow = Groupoid {object = Unit.⊤ } (λ _ _ → arrow)
 
 open Groupoid
