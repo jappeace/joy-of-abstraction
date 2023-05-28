@@ -18,24 +18,10 @@ import Data.Integer.Properties as Int
 import Agda.Primitive as Prim
 open import Algebra.Core
 import Relation.Binary.Core as BCore
+open import Relation.Binary.Structures using (IsEquivalence)
 
 open ≡-Reasoning
 
--- agda is to autistic on equivelence.
--- it'll try to set proofs equal to eachother in case of Homo.
--- we need to be able to weaken this definition
---
--- they do that here as well.
--- https://github.com/agda/agda-categories/blob/master/src/Categories/Category/Core.agda#L21
---
--- but I don't want to infect my category with this agda centric technicallity
--- to much, so I put this in a seperate record
-record UserEq {l1 l2 : Prim.Level } (A B : Set l1) : Set (l1  Prim.⊔ l2) where
-  constructor userEq
-  open BCore
-  field
-    _≈_ : ∀ {A B} → Rel (A ⇒ B) l2
-    -- TODO need to add, reflexive, symetric and transative
 
 
 
@@ -44,21 +30,33 @@ record UserEq {l1 l2 : Prim.Level } (A B : Set l1) : Set (l1  Prim.⊔ l2) where
 -- data: the basic building blocks consisting of
 -- + objects: things of type 'Set' are our obects
 -- + arrows: cat encodes arrows
-record Category {l1 l2 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2)  : Set (l1 Prim.⊔ l2) where
+record Category {l1 l2 l3 : Prim.Level } {object : Set l1} (arrow : object -> object -> Set l2)  : Set (l1 Prim.⊔ l2 Prim.⊔ (Prim.lsuc l3)) where
   constructor category
+  infix  4 _≈_
+  infixr 9 _∘_
   field
-    -- TODO need to add userdefinedEq
-    hasEq  : {a b : object } -> UserEq a b
-
     -- structure, things you do with the data.
     identity : {a : object} -> arrow a a
     _∘_ : {a b c : object} ->  arrow b c -> arrow a b -> arrow a c
 
-    -- properties, the rules the structure satisfies
-    unitʳ : {a b : object} (f : arrow a b) -> f ∘ identity ≡ f
-    unitˡ : {a b : object} (f : arrow a b) -> identity ∘ f ≡ f
+    -- agda is to autistic on equivelence.
+    -- it'll try to set proofs equal to eachother in case of Homo.
+    -- we need to be able to weaken this definition
+    --
+    -- they do that here as well.
+    -- https://github.com/agda/agda-categories/blob/master/src/Categories/Category/Core.agda#L21
+    _≈_ : ∀ {a b : object} → BCore.Rel (arrow a b) l3
+    --  we use the IsEquivelance struct to assert reflixivety, symettry and transitivety
+    --  for our custom equivelance relation (that ignores proofs)
+    equiv : ∀ { a b } → IsEquivalence (_≈_ {a} {b})
 
-    associativity : {a b c d : object} (f : arrow a b) (g : arrow b c) (h : arrow c d) -> (h ∘ g) ∘ f ≡  h ∘ (g ∘ f)
+
+    -- properties, the rules the structure satisfies
+    unitʳ : {a b : object} (f : arrow a b) -> f ∘ identity ≈ f
+    unitˡ : {a b : object} (f : arrow a b) -> identity ∘ f ≈ f
+
+    associativity : {a b c d : object} (f : arrow a b) (g : arrow b c) (h : arrow c d) -> (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+
 
 
 
@@ -75,7 +73,7 @@ leq-prop : {a b : ℕ} (x y : a ≤ b) → x ≡ y
 leq-prop z≤n z≤n = refl
 leq-prop (s≤s x) (s≤s y) = cong s≤s (leq-prop x y)
 
-Monoid : {l2 : Prim.Level } (arrow : Set l2) -> Set l2
+Monoid : {l2 : Prim.Level } (arrow : Set l2) -> Set (Prim.lsuc l2)
 Monoid arrow = Category {object = Unit.⊤ } (λ _ _ -> arrow)
 
 open Category
@@ -85,6 +83,8 @@ open Category
 leq : Category (N._≤_)
 identity leq {n} = leq-refl n
 _∘_ leq bc ab = leq-trans bc ab
+_≈_ leq a b = a ≡ b
+equiv leq = isEquivalence
 unitʳ leq f = leq-prop _ _
 unitˡ leq f = leq-prop _ _
 associativity leq f g h = leq-prop _ _
@@ -94,6 +94,8 @@ associativity leq f g h = leq-prop _ _
 eq : (x : Set) → Category { object = x } (_≡_)
 identity (eq _) {n} = refl
 _∘_ (eq _) ab bc = EqCore.trans bc ab
+_≈_ (eq _) a b = a ≡ b
+equiv (eq _) = isEquivalence
 unitʳ (eq _) f = refl
 unitˡ (eq _) refl = refl
 associativity (eq _) refl g h = refl
@@ -107,6 +109,8 @@ associativity (eq _) refl g h = refl
 addition : Monoid ℕ -- the arrows are the numbers, so we need to neglect the type args
 identity addition = zero
 _∘_ addition bc ab = bc + ab
+_≈_ addition a b = a ≡ b
+equiv addition = isEquivalence
 unitˡ addition a = P.+-identityˡ a
 unitʳ addition a = P.+-identityʳ a
 associativity addition a b c = P.+-assoc c b a
@@ -115,6 +119,8 @@ associativity addition a b c = P.+-assoc c b a
 addIntegers : Monoid Int.ℤ -- the arrows are the numbers, so we need to neglect the type args
 identity addIntegers = Int.0ℤ
 _∘_ addIntegers bc ab = Int._+_ bc ab
+_≈_ addIntegers a b = a ≡ b
+equiv addIntegers = isEquivalence
 unitˡ addIntegers a = Int.+-identityˡ a
 unitʳ addIntegers a = Int.+-identityʳ a
 associativity addIntegers a b c = Int.+-assoc c b a
@@ -129,6 +135,8 @@ associativity addIntegers a b c = Int.+-assoc c b a
 setsAndFunctions : {l : Prim.Level } -> Category { l2 = l } (λ a b -> (a -> b))
 identity setsAndFunctions {arg} = λ a -> a
 _∘_ setsAndFunctions bc ab = λ a → bc (ab a)
+_≈_ setsAndFunctions a b = a ≡ b
+equiv setsAndFunctions = isEquivalence
 -- the proofs are enforced by agda's typesystem.
 unitˡ setsAndFunctions a = refl
 unitʳ setsAndFunctions a = refl
@@ -139,6 +147,8 @@ monoidIsCategory : {a : Prim.Level } {A : Set a} {∙ : Op₂ A} {ε : A} ->
                   (Struct.IsMonoid (_≡_) ∙ ε) → Monoid A
 identity (monoidIsCategory {ε = ε} m) = ε
 _∘_ (monoidIsCategory {∙ = ∙} m) bc ab = ∙ bc ab
+_≈_ (monoidIsCategory _ ) a b = a ≡ b
+equiv (monoidIsCategory _ ) = isEquivalence
 unitˡ (monoidIsCategory m) cat = (Struct.IsMonoid.identityˡ m) cat
 unitʳ (monoidIsCategory m) cat = Struct.IsMonoid.identityʳ m cat
 associativity (monoidIsCategory m) f g h = Struct.IsSemigroup.assoc (Struct.IsMonoid.isSemigroup m) h g f
