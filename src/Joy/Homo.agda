@@ -81,7 +81,7 @@ module Mnd where
   mnd : {l2 : Prim.Level} -> ∀ (arrow : Set l2 ) -> Category {object  = Monoid arrow} HomoMorphism
   identity (mnd arrow) = identityHomo{arrow = arrow}
   _∘_ (mnd arrow) bc ab = compose bc ab
-  _≈_ (mnd arrow) a b = fun a ≡ fun b
+  _≈_ (mnd arrow) a b = ∀ x →  fun a x ≡ fun b x
   equiv (mnd arrow) = record
     { refl = refl
     ; sym = sym
